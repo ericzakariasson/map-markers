@@ -1,0 +1,31 @@
+version: '3.5'
+
+volumes:
+  ms-sqlserver-data: {}
+
+services:
+  db:
+    image: microsoft/mssql-server-linux:2017-latest
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - '1433:1433'
+    volumes:
+      - ms-sqlserver-data:/var/opt/mssql
+      - ./db:/usr/src/app
+    working_dir: /usr/src/app
+    command: sh -c ' chmod +x ./entrypoint.sh; ./entrypoint.sh & /opt/mssql/bin/sqlservr;'
+
+  server:
+    build:
+      context: ./server
+    environment:
+      - DB_USER=sa
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=localhost
+      - DB_PORT=1433
+    ports:
+      - '4000:4000'
+    depends_on:
+      - db

@@ -25,7 +25,6 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 401; /* Leaflet is 400 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .button {
@@ -37,6 +36,7 @@
   margin: 0;
   border: 0;
   letter-spacing: 0.05rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .button:hover {
@@ -50,4 +50,9 @@
 
 .button.clear {
   border-radius: 0 3px 3px 0;
+}
+
+.button.get-position {
+  margin-left: 20px;
+  border-radius: 3px;
 }

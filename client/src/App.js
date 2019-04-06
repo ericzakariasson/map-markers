@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import formatMathmaticalPattern from './formatMathematicalPattern';
 import { Map, TileLayer, Marker, Tooltip } from 'react-leaflet';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+
 const App = () => {
   const [showMarkers, setShowMarkers] = useState(false);
   const [markers, setMarkers] = useState([]);
@@ -9,7 +11,7 @@ const App = () => {
   const [clickCount, setClickCount] = useState(0);
 
   const fetchMarkers = async () => {
-    const res = await fetch('http://localhost:4000/markers');
+    const res = await fetch(`${API_URL}/markers`);
     const { data } = await res.json();
     setMarkers(data);
     setFetched(true);
@@ -23,8 +25,8 @@ const App = () => {
     setShowMarkers(true);
   };
   const handleHideMarkers = () => {
-    setClickCount(0);
     setShowMarkers(false);
+    setFetched(false);
   };
 
   const thirdClick = clickCount > 0 && clickCount % 3 === 0;
@@ -35,7 +37,7 @@ const App = () => {
 
   return (
     <div className="wrapper">
-      <div className="overlay" permanent>
+      <div className="overlay">
         <button className="button" onClick={handleShowMarkers}>
           READ
         </button>

@@ -17,15 +17,21 @@ services:
     working_dir: /usr/src/app
     command: sh -c ' chmod +x ./entrypoint.sh; ./entrypoint.sh & /opt/mssql/bin/sqlservr;'
 
-  server:
+  api:
     build:
       context: ./server
     environment:
-      - DB_USER=sa
+      - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
-      - DB_HOST=localhost
+      - DB_HOST=${DB_HOST}
       - DB_PORT=1433
+      - WAIT_HOSTS=db:1433
     ports:
-      - '4000:4000'
-    depends_on:
-      - db
+      - '${API_PORT}:4000'
+  web:
+    build:
+      context: client/
+      args:
+        REACT_APP_API_URL: 'http://localhost:${API_PORT}'
+    ports:
+      - '80:80'

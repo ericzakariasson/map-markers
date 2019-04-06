@@ -11,8 +11,6 @@ WHERE name = N'marker'
 CREATE DATABASE marker
 GO
 
-USE marker
-
 -- Create a new table called 'marker' in schema 'dbo'
 -- Drop the table if it already exists
 IF OBJECT_ID('dbo.marker', 'U') IS NOT NULL
@@ -26,6 +24,15 @@ CREATE TABLE dbo.marker
   long INT NOT NULL,
   text NVARCHAR(15) NOT NULL,
 );
+GO
+
+IF EXISTS (
+  SELECT type_desc, type
+FROM sys.procedures WITH(NOLOCK)
+WHERE NAME = 'merge_bulk_data'
+  AND type = 'P'
+  )
+  DROP PROCEDURE dbo.merge_bulk_data
 GO
 
 CREATE PROCEDURE dbo.merge_bulk_data

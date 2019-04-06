@@ -7,7 +7,7 @@ const LAT_MAX = 90;
 const LONG_MIN = -180;
 const LONG_MAX = 180;
 
-function generateMarkers(n = 100) {
+function generateMarkers(n = 50) {
   const markers = [];
   for (let i = 0; i < n; i++) {
     const lat = randomIntFromInterval(LAT_MIN, LAT_MAX);
@@ -33,8 +33,8 @@ function randomString() {
   );
 }
 
-const markerData = generateMarkers(10);
-async function insertData() {
+async function insertData(markers) {
+  const markerData = generateMarkers(markers);
   await sql.connect(config);
   const table = new sql.Table('#temp_data');
   table.create = true;
@@ -42,27 +42,26 @@ async function insertData() {
   table.columns.add('long', sql.Int, { nullable: false });
   table.columns.add('text', sql.NVarChar(15), { nullable: false });
 
-  markerData.forEach(marker =>
-    table.rows.add(marker.lat, marker.long, marker.text)
-  );
+  markerData.forEach(marker => table.rows.add(marker.lat, marker.long, marker.text));
 
   const request = new sql.Request();
+  await request.batch('DELETE FROM marker');
   const data = await request.bulk(table);
   await request.execute('merge_bulk_data');
   await request.batch('drop table #temp_data');
+  await sql.close();
   return data;
 }
 
-async function init() {
+const seed = async (markers = 50) => {
   try {
-    const data = await insertData();
+    const data = await insertData(markers);
     console.log('Successfully inserted data');
-    console.log(data);
+    process.exit(0);
   } catch (err) {
-    console.error('Could not insert data, error:');
-    console.error(err);
-    process.exit(1);
+    throw new Error('Could not insert data: ' + err);
+    // process.exit(1);
   }
-}
+};
 
-init();
+seed();

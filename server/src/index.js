@@ -21,4 +21,4 @@ const router = (req, res) => {
 };
 
 const server = http.createServer(router);
-server.listen(4000, () => console.log(`Serer listening on port 4000`));
+server.listen(4000, () => console.log(`Server listening on port 4000`));

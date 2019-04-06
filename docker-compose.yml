@@ -15,7 +15,7 @@ services:
       - ms-sqlserver-data:/var/opt/mssql
       - ./db:/usr/src/app
     working_dir: /usr/src/app
-    command: sh -c ' chmod +x ./entrypoint.sh; ./entrypoint.sh & /opt/mssql/bin/sqlservr;'
+    command: sh -c ' chmod +x ./entrypoint.sh; ./entrypoint.sh ${DB_USER} ${DB_PASSWORD} & /opt/mssql/bin/sqlservr;'
 
   api:
     build:

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import formatMathmaticalPattern from './formatMathematicalPattern';
+import formatMathematicalPattern from './formatMathematicalPattern';
 import { Map, TileLayer, Marker, Tooltip } from 'react-leaflet';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
@@ -32,16 +32,16 @@ const App = () => {
   const thirdClick = clickCount > 0 && clickCount % 3 === 0;
 
   const calculatedMarkers = thirdClick
-    ? formatMathmaticalPattern(markers)
+    ? formatMathematicalPattern(markers)
     : markers;
 
   return (
     <div className="wrapper">
       <div className="overlay">
-        <button className="button" onClick={handleShowMarkers}>
+        <button className="button read" onClick={handleShowMarkers}>
           READ
         </button>
-        <button className="button" onClick={handleHideMarkers}>
+        <button className="button clear" onClick={handleHideMarkers}>
           CLEAR
         </button>
       </div>

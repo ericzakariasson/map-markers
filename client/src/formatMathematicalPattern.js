@@ -1,4 +1,4 @@
-export default function formatMathemathicalPattern(markers) {
+export default function formatMathematicalPattern(markers) {
   const width = 360 / markers.length;
   return markers.map((marker, i) => {
     const x = i * width - 180;

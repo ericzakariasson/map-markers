@@ -1,0 +1,30 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+}
+
+.wrapper,
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+}
+
+.overlay {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 401; /* Leaflet is 400 */
+}
+
+.button {
+  padding: 10px 12px;
+  border-radius: 3px;
+  background: #fff;
+  cursor: pointer;
+}

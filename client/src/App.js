@@ -1,71 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import {
-  ComposableMap,
-  ZoomableGroup,
-  Geographies,
-  Geography,
-} from 'react-simple-maps';
-
-import world from './world-50m.json';
-
-const wrapperStyles = {
-  width: '100%',
-  maxWidth: 980,
-  margin: '0 auto',
-};
+import React, { useState } from 'react';
+import formatMathmaticalPattern from './formatMathematicalPattern';
+import { Map, TileLayer, Marker, Tooltip } from 'react-leaflet';
 
 const App = () => {
+  const [showMarkers, setShowMarkers] = useState(false);
+  const [markers, setMarkers] = useState([]);
+  const [fetched, setFetched] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+
+  const fetchMarkers = async () => {
+    const res = await fetch('http://localhost:4000/markers');
+    const { data } = await res.json();
+    setMarkers(data);
+    setFetched(true);
+  };
+
+  const handleShowMarkers = async () => {
+    setClickCount(clickCount + 1);
+    if (!fetched) {
+      await fetchMarkers();
+    }
+    setShowMarkers(true);
+  };
+  const handleHideMarkers = () => {
+    setClickCount(0);
+    setShowMarkers(false);
+  };
+
+  const thirdClick = clickCount > 0 && clickCount % 3 === 0;
+
+  const calculatedMarkers = thirdClick
+    ? formatMathmaticalPattern(markers)
+    : markers;
+
   return (
-    <div style={wrapperStyles}>
-      <ComposableMap
-        projectionConfig={{
-          scale: 205,
-          rotation: [-11, 0, 0],
-        }}
-        width={980}
-        height={551}
-        style={{
-          width: '100%',
-          height: 'auto',
-        }}
-      >
-        <ZoomableGroup center={[0, 20]} disablePanning>
-          <Geographies geography={world}>
-            {(geographies, projection) =>
-              geographies.map(
-                (geography, i) =>
-                  geography.id !== 'ATA' && (
-                    <Geography
-                      key={i}
-                      geography={geography}
-                      projection={projection}
-                      style={{
-                        default: {
-                          fill: '#ECEFF1',
-                          stroke: '#607D8B',
-                          strokeWidth: 0.75,
-                          outline: 'none',
-                        },
-                        hover: {
-                          fill: '#607D8B',
-                          stroke: '#607D8B',
-                          strokeWidth: 0.75,
-                          outline: 'none',
-                        },
-                        pressed: {
-                          fill: '#FF5722',
-                          stroke: '#607D8B',
-                          strokeWidth: 0.75,
-                          outline: 'none',
-                        },
-                      }}
-                    />
-                  )
-              )
-            }
-          </Geographies>
-        </ZoomableGroup>
-      </ComposableMap>
+    <div className="wrapper">
+      <div className="overlay" permanent>
+        <button className="button" onClick={handleShowMarkers}>
+          READ
+        </button>
+        <button className="button" onClick={handleHideMarkers}>
+          CLEAR
+        </button>
+      </div>
+      <Map center={[0, 0]} zoom={2}>
+        <TileLayer
+          attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+        />
+        {showMarkers &&
+          calculatedMarkers.map(marker => (
+            <Marker key={marker.id} position={[marker.lat, marker.long]}>
+              <Tooltip>{marker.text}</Tooltip>
+            </Marker>
+          ))}
+      </Map>
     </div>
   );
 };

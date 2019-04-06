@@ -1,8 +1,15 @@
 const sql = require('mssql');
 const config = require('./config');
 
+const headers = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'OPTIONS, POST, GET',
+  'Access-Control-Max-Age': 2592000, // 30 days
+  'Content-Type': 'application/json'
+};
+
 function sendJSON(res, data) {
-  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.writeHead(200, headers);
   res.end(JSON.stringify(data));
 }
 
@@ -35,6 +42,10 @@ exports.defaultController = {
   },
   POST: (req, res) => {
     res.writeHead(404);
+    res.end();
+  },
+  CORS: (req, res) => {
+    res.writeHead(204, headers);
     res.end();
   }
 };

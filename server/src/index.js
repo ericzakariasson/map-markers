@@ -4,7 +4,8 @@ const { markerController, defaultController } = require('./controller');
 
 const routes = {
   '/markers': {
-    GET: markerController.getMarkers
+    GET: markerController.getMarkers,
+    OPTIONS: defaultController.CORS
   }
 };
 
